@@ -85,6 +85,16 @@
     return CONFIG.COLORS_BY_ESTADO[estado] || CONFIG.COLORS_BY_ESTADO.default;
   }
 
+  // Busca en CONFIG.IMAGE_OVERRIDES si el hito (Año + Título exacto) tiene
+  // una imagen asignada manualmente. Devuelve { src, alt } o null.
+  function findImageOverride(anio, headline) {
+    const list = CONFIG.IMAGE_OVERRIDES || [];
+    const match = list.find(
+      (o) => o.anio === anio && o.titulo.trim() === headline.trim()
+    );
+    return match ? { src: match.src, alt: match.alt || "" } : null;
+  }
+
   function estadoLabel(estado) {
     return estado === "default" ? "Sin estado" : estado;
   }
@@ -170,6 +180,7 @@
         text: (row[c.text] || "").toString().trim(),
         fuente: (row[c.fuente] || "").toString().trim(),
         estado: (row[c.estado] || "").toString().trim() || "default",
+        imagen: findImageOverride(anio, headline),
         rowOrder: i,
         searchBlob: normalizeForSearch(
           [headline, row[c.text], categoria, row[c.subcategoria], row[c.fuente]]
@@ -323,10 +334,12 @@
     if (e.fuente) metaParts.push(escapeHtml(e.fuente));
 
     return (
-      `<div class="hito-row" data-id="${e.id}">` +
+      `<div class="hito-row${e.imagen ? " hito-row--has-image" : ""}" data-id="${e.id}">` +
       `<span class="hito-row__dot" style="background:${color.fill}" aria-hidden="true"></span>` +
       `<div class="hito-row__main">` +
-      `<div class="hito-row__headline">${escapeHtml(e.headline)}</div>` +
+      `<div class="hito-row__headline">${escapeHtml(e.headline)}${
+        e.imagen ? ' <span class="hito-row__image-badge" title="Tiene imagen">🖼</span>' : ""
+      }</div>` +
       `<div class="hito-row__meta">${metaParts.join(" · ")}</div>` +
       `</div>` +
       `</div>`
@@ -527,7 +540,8 @@
       `<div class="tooltip__meta">${escapeHtml(estadoLabel(e.estado))} · ${escapeHtml(e.categoria)} · ${e.anio}</div>` +
       (preview
         ? `<div class="tooltip__preview">${escapeHtml(preview)}${ellipsis}</div>`
-        : "");
+        : "") +
+      (e.imagen ? `<div class="tooltip__hint">🖼 Tiene imagen — click para verla</div>` : "");
     tip.hidden = false;
     moveTooltip(event);
   }
@@ -565,6 +579,14 @@
         ${escapeHtml(estadoLabel(e.estado))}
       </div>
       <h2 class="detail-panel__headline">${escapeHtml(e.headline)}</h2>
+
+      ${
+        e.imagen
+          ? `<div class="detail-field detail-field__image">
+               <img src="${escapeHtml(e.imagen.src)}" alt="${escapeHtml(e.imagen.alt)}" loading="lazy">
+             </div>`
+          : ""
+      }
 
       <div class="detail-field">
         <div class="detail-field__label">Año</div>

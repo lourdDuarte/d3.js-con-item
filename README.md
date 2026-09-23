@@ -31,9 +31,10 @@ página, igual que en la Versión 1: nada se copia dentro del proyecto.
 7. [Cómo modificar los colores](#7-cómo-modificar-los-colores)
 8. [Cómo modificar los estilos / el diseño](#8-cómo-modificar-los-estilos--el-diseño)
 9. [Cómo agregar nuevas columnas](#9-cómo-agregar-nuevas-columnas)
-10. [Cómo funciona por dentro (resumen técnico)](#10-cómo-funciona-por-dentro-resumen-técnico)
-11. [Rendimiento con cientos o miles de hitos](#11-rendimiento-con-cientos-o-miles-de-hitos)
-12. [Solución de problemas](#12-solución-de-problemas)
+10. [Cómo asignar una imagen a un hito puntual](#10-cómo-asignar-una-imagen-a-un-hito-puntual)
+11. [Cómo funciona por dentro (resumen técnico)](#11-cómo-funciona-por-dentro-resumen-técnico)
+12. [Rendimiento con cientos o miles de hitos](#12-rendimiento-con-cientos-o-miles-de-hitos)
+13. [Solución de problemas](#13-solución-de-problemas)
 
 ---
 
@@ -353,7 +354,47 @@ SIDEBAR: FILTROS"**). Necesitás, en total:
 
 ---
 
-## 10. Cómo funciona por dentro (resumen técnico)
+## 10. Cómo asignar una imagen a un hito puntual
+
+El Google Sheet de origen no tiene una columna de imagen, así que las
+imágenes se asignan a mano, hito por hito, en `config.js`, bloque
+`IMAGE_OVERRIDES`:
+
+```js
+IMAGE_OVERRIDES: [
+  {
+    anio: 1996,
+    titulo: "Convenio desmotadores-Banco Formosa créditos 50% tasa",
+    src: "assets/images/1996-modelo-formoseno-1.png",
+    alt: "Tapa del libro Modelo Formoseño"
+  },
+  // ...una entrada más por cada hito con imagen...
+],
+```
+
+Para agregar una imagen a otro hito:
+
+1. Poné el archivo dentro de `assets/images/` (creá la carpeta si no
+   existe).
+2. Sumá una entrada al array `IMAGE_OVERRIDES` con `anio` (numérico),
+   `titulo` (el texto **exacto** de la columna "Título" de ese hito en
+   el Sheet — copialo y pegalo directo para evitar errores de tipeo),
+   `src` (ruta al archivo) y `alt` (texto descriptivo corto).
+
+La imagen aparece automáticamente arriba de los datos en el panel de
+detalle de ese hito. Además, en el listado, esa fila se resalta con un
+fondo tenue y un ícono 🖼 junto al título, y el tooltip al pasar el
+mouse agrega la leyenda "🖼 Tiene imagen — click para verla" — así se
+nota a simple vista, sin tener que abrir cada hito para descubrirlo.
+
+Si en algún momento el Sheet suma su propia columna de imagen, lo más
+prolijo es reemplazar este mecanismo por esa columna, siguiendo el
+mismo procedimiento que la sección 9 ("Cómo agregar nuevas columnas")
+en vez de mantener la lista manual.
+
+---
+
+## 11. Cómo funciona por dentro (resumen técnico)
 
 `app.js` está organizado en 13 secciones numeradas, cada una con un
 comentario de bloque:
@@ -403,7 +444,7 @@ modificar el código sin herramientas adicionales.
 
 ---
 
-## 11. Rendimiento con cientos o miles de hitos
+## 12. Rendimiento con cientos o miles de hitos
 
 Esta versión está pensada, desde el diseño, para escalar mejor que un
 timeline de posiciones en píxeles a medida que crece la cantidad de
@@ -435,7 +476,7 @@ defecto.
 
 ---
 
-## 12. Solución de problemas
+## 13. Solución de problemas
 
 Los mismos casos que la Versión 1 aplican acá (mensaje de error de
 lectura del Sheet, nombres de columnas que no coinciden, cambios que no

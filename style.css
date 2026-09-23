@@ -561,6 +561,18 @@ button {
   white-space: nowrap;
 }
 
+.hito-row--has-image {
+  background: var(--color-accent-soft);
+}
+.hito-row--has-image:hover {
+  background: var(--color-accent-soft);
+  filter: brightness(0.97);
+}
+.hito-row__image-badge {
+  font-size: 12px;
+  vertical-align: middle;
+}
+
 /* ---- Índice de años (mini-mapa a la derecha) ---- */
 
 .year-index {
@@ -657,6 +669,13 @@ button {
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding-top: 6px;
 }
+.tooltip__hint {
+  margin-top: 6px;
+  font-size: 11px;
+  opacity: 0.85;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 6px;
+}
 
 /* ============================ DETAIL PANEL ============================ */
 
@@ -747,6 +766,17 @@ button {
 .detail-field__value--muted {
   color: var(--color-text-muted);
   font-style: italic;
+}
+
+.detail-field__image {
+  margin: -4px 0 20px;
+}
+.detail-field__image img {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ============================ RESPONSIVE ============================ */
